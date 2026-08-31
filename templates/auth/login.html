@@ -1,69 +1,56 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class="auth auth-login">
-  <section class="auth-shell">
-    <aside class="auth-showcase">
-      <a class="auth-brand" href="{% url 'home' %}"><span>U</span>ZA</a>
-      <div class="auth-showcase-content">
-        <span class="eyebrow">BIENVENUE SUR UZA</span>
-        <h1>Tout ce que vous aimez, <strong>au même endroit.</strong></h1>
-        <p>Connectez-vous pour retrouver vos achats, gérer vos publications et continuer votre expérience UZA.</p>
-        <div class="auth-benefits">
-          <div><span>✓</span><div><b>Votre espace personnel</b><small>Retrouvez vos commandes et vos favoris.</small></div></div>
-          <div><span>✓</span><div><b>Vendez simplement</b><small>Gérez vos publications depuis votre compte.</small></div></div>
-          <div><span>✓</span><div><b>Une expérience sécurisée</b><small>Vos informations restent protégées.</small></div></div>
+<style>
+.login-page{min-height:calc(100vh - 76px);display:grid;place-items:center;padding:44px 20px;background:#f5f6fb;position:relative;overflow:hidden}
+.login-page:before,.login-page:after{content:"";position:absolute;border-radius:50%;filter:blur(3px);pointer-events:none}.login-page:before{width:520px;height:520px;background:#e3e0ff;left:-240px;top:-220px}.login-page:after{width:420px;height:420px;background:#ddd9ff;right:-180px;bottom:-190px}
+.login-shell{width:min(1030px,100%);min-height:620px;display:grid;grid-template-columns:44% 56%;background:#fff;border:1px solid #e7e8f0;border-radius:30px;overflow:hidden;box-shadow:0 30px 80px rgba(27,31,58,.13);position:relative;z-index:1}
+.login-visual{padding:42px;position:relative;overflow:hidden;background:linear-gradient(145deg,#11182f 0%,#25245a 55%,#5144c5 100%);color:#fff;display:flex;flex-direction:column;justify-content:space-between}.login-visual:before,.login-visual:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.12)}.login-visual:before{width:330px;height:330px;right:-170px;top:-80px}.login-visual:after{width:250px;height:250px;left:-150px;bottom:-100px}
+.login-brand{font-size:29px;font-weight:950;letter-spacing:-.07em;position:relative;z-index:2}.login-brand span{color:#aaa2ff}.login-copy{position:relative;z-index:2}.login-copy .eyebrow{color:#bcb7ff}.login-copy h1{font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.055em;margin:14px 0 17px}.login-copy h1 strong{color:#bdb8ff}.login-copy p{color:#c3c8d8;line-height:1.75;max-width:390px;font-size:14px}.login-points{display:grid;gap:11px;margin-top:27px}.login-point{display:flex;align-items:center;gap:11px;color:#e9ebf3;font-size:12px}.login-point i{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#bcb7ff;font-style:normal;font-weight:900}
+.login-form-area{padding:54px 58px;display:flex;flex-direction:column;justify-content:center}.login-kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#5b4bd8;font-weight:950}.login-form-area h2{font-size:34px;letter-spacing:-.045em;margin:9px 0 7px;color:#171b2f}.login-intro{color:#697187;margin:0 0 28px;font-size:14px}.login-form{display:grid;gap:17px}.login-field{display:grid;gap:7px}.login-field label{font-size:12px;font-weight:850;color:#30364b}.login-input{position:relative}.login-input>input{width:100%;height:52px;padding:0 48px 0 15px;border:1px solid #dfe2eb;border-radius:14px;background:#fbfcfe;color:#171b2f;outline:none;transition:.2s}.login-input>input:focus{border-color:#7b70e2;background:#fff;box-shadow:0 0 0 4px rgba(91,75,216,.10)}.login-input:before{content:"";position:absolute;z-index:2;left:16px;top:18px;width:8px;height:8px;border:1.7px solid #8990a4;border-radius:50%;pointer-events:none}.login-input>input{padding-left:38px}.login-password:before{border-radius:3px}.login-password>input{padding-right:78px}.login-password-toggle{position:absolute;right:10px;top:7px;height:38px;border:0;background:transparent;color:#5b4bd8;font-size:11px;font-weight:850}.login-errors{padding:11px 13px;border-radius:12px;background:#fff0f1;color:#b52f42;font-size:12px;border:1px solid #ffd6da}.login-options{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:-3px;font-size:11px}.login-remember{display:flex;align-items:center;gap:7px;color:#697187}.login-remember input{accent-color:#5b4bd8}.login-options a,.login-register a{color:#5142c6;font-weight:850}.login-submit{width:100%;min-height:52px;border:0!important;border-radius:14px!important;background:linear-gradient(135deg,#6353e3,#4b3cc2)!important;color:#fff!important;font-weight:900!important;box-shadow:0 13px 25px rgba(91,75,216,.22)}.login-submit:hover{transform:translateY(-1px);box-shadow:0 17px 30px rgba(91,75,216,.27)!important}.login-submit span{margin-left:auto}.login-submit .arrow{margin-left:0;font-size:20px}.login-register{text-align:center;margin:22px 0 0;color:#697187;font-size:12px}.login-legal{text-align:center;color:#9aa0b0;font-size:10px;line-height:1.6;margin:18px auto 0;max-width:390px}
+@media(max-width:760px){.login-page{min-height:calc(100vh - 68px);padding:18px 12px;align-items:start}.login-shell{display:block;min-height:0;border-radius:22px}.login-visual{display:none}.login-form-area{padding:34px 22px 28px}.login-form-area h2{font-size:30px}.login-intro{margin-bottom:23px}.login-input>input{height:50px}.login-submit{min-height:50px}.login-page:before{width:300px;height:300px;left:-180px;top:-150px}.login-page:after{width:250px;height:250px;right:-160px;bottom:-150px}}
+</style>
+<main class="login-page">
+  <section class="login-shell">
+    <aside class="login-visual">
+      <a class="login-brand" href="{% url 'home' %}"><span>U</span>ZA</a>
+      <div class="login-copy">
+        <span class="eyebrow">ESPACE UZA</span>
+        <h1>Bon retour sur <strong>UZA.</strong></h1>
+        <p>Retrouvez vos achats, vos favoris et vos publications dans un espace simple, rapide et pensé pour vous.</p>
+        <div class="login-points">
+          <div class="login-point"><i>✓</i><span>Suivez facilement vos achats</span></div>
+          <div class="login-point"><i>✓</i><span>Gérez toutes vos publications</span></div>
+          <div class="login-point"><i>✓</i><span>Retrouvez votre espace personnel</span></div>
         </div>
       </div>
-      <div class="auth-decoration auth-decoration-one"></div>
-      <div class="auth-decoration auth-decoration-two"></div>
+      <small style="position:relative;z-index:2;color:#9299b1;font-size:10px">Une expérience pensée pour acheter et vendre autrement.</small>
     </aside>
-
-    <div class="auth-form-panel">
-      <div class="auth-mobile-brand"><a class="auth-brand" href="{% url 'home' %}"><span>U</span>ZA</a></div>
-      <div class="auth-heading">
-        <span class="eyebrow">ESPACE PERSONNEL</span>
-        <h2>Bon retour 👋</h2>
-        <p>Connectez-vous à votre compte pour continuer.</p>
-      </div>
-
-      <form method="post" class="auth-form" novalidate>
+    <div class="login-form-area">
+      <span class="login-kicker">Connexion</span>
+      <h2>Bienvenue 👋</h2>
+      <p class="login-intro">Connectez-vous pour accéder à votre espace UZA.</p>
+      <form method="post" class="login-form">
         {% csrf_token %}
-        {% if form.non_field_errors %}
-          <div class="auth-error">{{ form.non_field_errors }}</div>
-        {% endif %}
+        {% if form.non_field_errors %}<div class="login-errors">{{ form.non_field_errors }}</div>{% endif %}
         {% for field in form %}
-          <div class="auth-field {% if field.errors %}has-error{% endif %}">
+          <div class="login-field">
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            <div class="auth-input-wrap">
-              <span class="auth-input-icon">{% if 'password' in field.name %}●{% else %}@{% endif %}</span>
+            <div class="login-input {% if 'password' in field.name %}login-password{% endif %}">
               {{ field }}
-              {% if 'password' in field.name %}<button type="button" class="password-toggle" aria-label="Afficher le mot de passe">Afficher</button>{% endif %}
+              {% if 'password' in field.name %}<button type="button" class="login-password-toggle">Afficher</button>{% endif %}
             </div>
-            {% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}
+            {% if field.errors %}<div class="login-errors">{{ field.errors|striptags }}</div>{% endif %}
           </div>
         {% endfor %}
-
-        <div class="auth-options">
-          <label class="remember"><input type="checkbox" name="remember"> <span>Se souvenir de moi</span></label>
-          <a href="#">Mot de passe oublié ?</a>
-        </div>
-        <button class="btn btn-primary auth-submit" type="submit"><span>Se connecter</span><span class="auth-arrow">→</span></button>
+        <div class="login-options"><label class="login-remember"><input type="checkbox" name="remember"> Se souvenir de moi</label><a href="#">Mot de passe oublié ?</a></div>
+        <button class="btn btn-primary login-submit" type="submit"><span>Se connecter</span><span class="arrow">→</span></button>
       </form>
-
-      <div class="auth-divider"><span>ou</span></div>
-      <p class="auth-switch">Vous n’avez pas encore de compte ? <a href="{% url 'register' %}">Créer un compte</a></p>
-      <p class="auth-legal">En continuant, vous acceptez les conditions d’utilisation et la politique de confidentialité d’UZA.</p>
+      <p class="login-register">Vous n’avez pas encore de compte ? <a href="{% url 'register' %}">Créer un compte</a></p>
+      <p class="login-legal">En continuant, vous acceptez les conditions d’utilisation et la politique de confidentialité d’UZA.</p>
     </div>
   </section>
 </main>
 <script>
-  document.querySelectorAll('.password-toggle').forEach(function(button){
-    button.addEventListener('click', function(){
-      const input = this.closest('.auth-input-wrap').querySelector('input');
-      if (!input) return;
-      input.type = input.type === 'password' ? 'text' : 'password';
-      this.textContent = input.type === 'password' ? 'Afficher' : 'Masquer';
-    });
-  });
+document.querySelectorAll('.login-password-toggle').forEach(function(btn){btn.addEventListener('click',function(){const input=this.parentElement.querySelector('input');if(!input)return;input.type=input.type==='password'?'text':'password';this.textContent=input.type==='password'?'Afficher':'Masquer';});});
 </script>
 {% endblock %}
