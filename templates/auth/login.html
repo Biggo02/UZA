@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<main class='auth'><div class='card auth-card'><span class='eyebrow'>UZA</span><h1>Connexion</h1><p>Accédez à votre espace acheteur et vendeur.</p><form method='post'>{% csrf_token %}{{ form.as_p }}<button class='btn primary full'>Se connecter</button></form><a href='{% url "register" %}'>Créer un compte</a></div></main>{% endblock %}
