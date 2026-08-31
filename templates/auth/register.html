@@ -1,1 +1,49 @@
-{% extends 'base.html' %}{% block content %}<main class='auth'><div class='card auth-card'><span class='eyebrow'>UZA</span><h1>Créer mon compte</h1><p>Un seul compte pour acheter et revendre.</p><form method='post'>{% csrf_token %}{{ form.as_p }}<button class='btn primary full'>Créer mon compte</button></form><a href='{% url "login" %}'>J'ai déjà un compte</a></div></main>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Créer un compte — UZA{% endblock %}
+{% block content %}
+<main class="auth auth-register">
+  <div class="auth-shell">
+    <section class="auth-visual">
+      <div class="auth-visual-top"><span class="auth-brand">UZA</span><span class="auth-secure">● Plateforme sécurisée</span></div>
+      <div class="auth-visual-content">
+        <span class="eyebrow">Rejoignez UZA</span>
+        <h1>Achetez et revendez avec plus de confiance.</h1>
+        <p>Un seul compte pour découvrir des appareils, publier vos produits et organiser vos transactions avec UZA.</p>
+        <div class="auth-points">
+          <div><span>✓</span><div><b>Compte unique</b><small>Acheteur et vendeur avec le même espace.</small></div></div>
+          <div><span>✓</span><div><b>Compte certifié</b><small>Vos informations restent protégées.</small></div></div>
+          <div><span>✓</span><div><b>Transaction encadrée</b><small>UZA vous accompagne jusqu'à la remise du produit.</small></div></div>
+        </div>
+      </div>
+      <div class="auth-visual-footer">Votre confiance est au centre de notre plateforme.</div>
+    </section>
+
+    <section class="card auth-card auth-card-register">
+      <div class="auth-heading">
+        <span class="auth-mobile-brand">UZA</span>
+        <span class="eyebrow">Créer votre espace</span>
+        <h2>Bienvenue chez UZA</h2>
+        <p>Créez votre compte en quelques instants.</p>
+      </div>
+
+      <form method="post" class="auth-form" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-alert">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+          <label class="field" for="{{ field.id_for_label }}">
+            <span>{{ field.label }}{% if field.field.required %}<em>*</em>{% endif %}</span>
+            {{ field }}
+            {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </label>
+        {% endfor %}
+        <label class="terms-check"><input type="checkbox" required><span>J'accepte les conditions d'utilisation et la politique de confidentialité de UZA.</span></label>
+        <button class="btn primary full auth-submit" type="submit"><span>Créer mon compte</span><strong>→</strong></button>
+      </form>
+
+      <div class="auth-divider"><span>Déjà membre ?</span></div>
+      <a class="auth-secondary-action" href="{% url 'login' %}">Se connecter à mon compte <span>→</span></a>
+    </section>
+  </div>
+</main>
+{% endblock %}
