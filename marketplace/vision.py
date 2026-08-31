@@ -13,7 +13,6 @@ from functools import lru_cache
 
 import requests
 
-
 CATEGORY_LABELS = {
     "Smartphones": ["smartphone", "téléphone portable", "mobile phone"],
     "Téléphones classiques": ["feature phone", "téléphone classique"],
@@ -67,10 +66,7 @@ def _local_model():
     """Load CLIP only when local recognition is requested."""
     from transformers import CLIPModel, CLIPProcessor
     model_name = os.environ.get("UZA_LOCAL_VISION_MODEL", "openai/clip-vit-base-patch32")
-    return (
-        CLIPProcessor.from_pretrained(model_name),
-        CLIPModel.from_pretrained(model_name),
-    )
+    return CLIPProcessor.from_pretrained(model_name), CLIPModel.from_pretrained(model_name)
 
 
 def _local_analyze(files):
@@ -85,16 +81,13 @@ def _local_analyze(files):
         uploaded.seek(0)
 
     labels = list(CATEGORY_LABELS.keys())
-    prompts = [
-        f"a clear photo of a {CATEGORY_LABELS[label][0]}",
-        f"a used or new {CATEGORY_LABELS[label][0]}",
-    ]
-
-    # Evaluate every photo independently, then average scores across the five views.
     aggregate = torch.zeros(len(labels), dtype=torch.float32)
     with torch.no_grad():
         for image in images:
-            text_inputs = [p.format(label) if "{}" in p else p for label, p in zip(labels, prompts)]
+            text_inputs = [
+                f"a clear photo of a {CATEGORY_LABELS[label][0]}"
+                for label in labels
+            ]
             inputs = processor(text=text_inputs, images=[image] * len(text_inputs), return_tensors="pt", padding=True)
             outputs = model(**inputs)
             scores = outputs.logits_per_image[0].softmax(dim=0)
@@ -135,16 +128,8 @@ def _openai_analyze(files):
     content = [{"type": "input_text", "text": "Analyse ces cinq photos comme un seul jeu d'images. Identifie l'objet même sans logo, étiquette ou texte en utilisant silhouette, forme, proportions, composants, connecteurs et design. Le texte/OCR est seulement un indice. Ne fabrique jamais une marque ou un modèle. Retourne UNIQUEMENT un JSON avec object, category, brand, model, confidence (0-100), evidence et uncertainty. Si une valeur est indéterminable, mets null."}]
     for uploaded in files:
         content.append({"type": "input_image", "image_url": _data_url(uploaded), "detail": "high"})
-    payload = {
-        "model": os.environ.get("UZA_VISION_MODEL", "gpt-5.6-luna"),
-        "input": [{"role": "user", "content": content}],
-    }
-    response = requests.post(
-        "https://api.openai.com/v1/responses",
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        json=payload,
-        timeout=90,
-    )
+    payload = {"model": os.environ.get("UZA_VISION_MODEL", "gpt-5.6-luna"), "input": [{"role": "user", "content": content}]}
+    response = requests.post("https://api.openai.com/v1/responses", headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"}, json=payload, timeout=90)
     response.raise_for_status()
     data = response.json()
     result = json.loads(data.get("output_text", "").strip())
@@ -162,7 +147,6 @@ def analyze_images(files):
     if mode != "openai":
         try:
             result = _local_analyze(files)
-            # Only ask a paid provider for help when explicitly enabled and local confidence is low.
             if fallback == "openai" and result.get("confidence", 0) < 55:
                 paid = _openai_analyze(files)
                 if paid:
@@ -191,14 +175,4 @@ def analyze_images(files):
     except Exception as exc:
         return {"status": "ERROR", "confidence": 0, "photo_count": 5, "message": f"Analyse indisponible : {exc}"}
 
-    return {
-        "status": "LOCAL_UNAVAILABLE",
-        "engine": "LOCAL_CLIP",
-        "confidence": 0,
-        "object": None,
-        "category": None,
-        "brand": None,
-        "model": None,
-        "photo_count": 5,
-        "message": "Aucun moteur de vision disponible. Identifiez l'appareil manuellement pour continuer.",
-    }
+    return {"status": "LOCAL_UNAVAILABLE", "engine": "LOCAL_CLIP", "confidence": 0, "object": None, "category": None, "brand": None, "model": None, "photo_count": 5, "message": "Aucun moteur de vision disponible. Identifiez l'appareil manuellement pour continuer."}
