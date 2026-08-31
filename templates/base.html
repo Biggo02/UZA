@@ -1,1 +1,84 @@
-{% load static %}<!doctype html><html lang='fr'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>{% block title %}UZA — Marketplace de confiance{% endblock %}</title><link rel='stylesheet' href='{% static "uza.css" %}'></head><body><header><div class='nav'><a class='logo' href='{% url "home" %}'>UZA</a><nav><a href='{% url "home" %}'>Accueil</a><a href='{% url "listings" %}'>Annonces</a><a href='#'>Catégories</a><a href='#'>Comment ça marche</a><a href='#'>À propos</a><a href='#'>Nos locaux</a></nav><div class='head-actions'>{% if user.is_authenticated %}<a class='avatar' href='{% url "dashboard" %}'>{% if user.avatar %}<img src='{{ user.avatar.url }}'>{% else %}{{ user.first_name|first|default:user.username|first|upper }}{% endif %}</a>{% else %}<a class='btn ghost' href='{% url "login" %}'>Se connecter</a><a class='btn primary' href='{% url "register" %}'>S'inscrire</a>{% endif %}</div></div></header>{% if messages %}<div class='flash'>{% for m in messages %}<div>{{ m }}</div>{% endfor %}</div>{% endif %}{% block content %}{% endblock %}<footer><div class='wrap'><b>UZA</b><p>Achetez et revendez vos appareils en toute confiance.</p></div></footer></body></html>
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#11182f">
+  <title>{% block title %}UZA — Marketplace de confiance{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'uza.css' %}">
+</head>
+<body>
+<header class="site-header">
+  <div class="nav wrap">
+    <a class="logo" href="{% url 'home' %}" aria-label="UZA accueil"><span>U</span>ZA</a>
+    <nav class="desktop-nav" aria-label="Navigation principale">
+      <a href="{% url 'home' %}">Accueil</a>
+      <a href="{% url 'listings' %}">Annonces</a>
+      <a href="#categories">Catégories</a>
+      <a href="#how-it-works">Comment ça marche</a>
+      <a href="#about">À propos</a>
+      <a href="#locations">Nos locaux</a>
+    </nav>
+    <div class="head-actions">
+      {% if user.is_authenticated %}
+        <a class="profile-chip" href="{% url 'dashboard' %}">
+          <span class="avatar">{% if user.avatar %}<img src="{{ user.avatar.url }}" alt="Photo de profil">{% else %}{{ user.first_name|first|default:user.username|first|upper }}{% endif %}</span>
+          <span class="profile-name">{{ user.first_name|default:user.username }}</span>
+        </a>
+      {% else %}
+        <a class="btn btn-ghost btn-sm" href="{% url 'login' %}">Se connecter</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'register' %}">S'inscrire</a>
+      {% endif %}
+      <button class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-controls="mobile-menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-inner wrap">
+      <a href="{% url 'home' %}">Accueil</a>
+      <a href="{% url 'listings' %}">Toutes les annonces</a>
+      <a href="#categories">Catégories</a>
+      <a href="#how-it-works">Comment ça marche</a>
+      <a href="#about">À propos de UZA</a>
+      <a href="#locations">Nos locaux</a>
+      {% if user.is_authenticated %}
+        <a class="mobile-profile" href="{% url 'dashboard' %}">Mon espace</a>
+        <a href="{% url 'logout' %}">Déconnexion</a>
+      {% else %}
+        <div class="mobile-auth">
+          <a class="btn btn-ghost" href="{% url 'login' %}">Se connecter</a>
+          <a class="btn btn-primary" href="{% url 'register' %}">Créer mon compte</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</header>
+{% if messages %}
+  <div class="flash-stack">{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}</div>
+{% endif %}
+{% block content %}{% endblock %}
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div><a class="footer-logo" href="{% url 'home' %}">UZA</a><p>Achetez et revendez vos appareils en toute confiance.</p></div>
+    <div><b>Marketplace</b><a href="{% url 'listings' %}">Annonces</a><a href="#categories">Catégories</a><a href="#how-it-works">Comment ça marche</a></div>
+    <div><b>UZA</b><a href="#about">À propos</a><a href="#locations">Nos locaux</a><a href="#">Support</a></div>
+  </div>
+  <div class="wrap footer-bottom"><span>© {% now "Y" %} UZA. Tous droits réservés.</span><span>Transactions organisées par UZA</span></div>
+</footer>
+<script>
+(function(){
+  const button=document.querySelector('.menu-toggle'), menu=document.getElementById('mobile-menu');
+  if(!button||!menu)return;
+  button.addEventListener('click',function(){
+    const open=menu.classList.toggle('is-open');
+    button.classList.toggle('is-open',open);
+    button.setAttribute('aria-expanded',open?'true':'false');
+    document.body.classList.toggle('menu-open',open);
+  });
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('is-open');button.classList.remove('is-open');button.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open')}));
+})();
+</script>
+</body>
+</html>
