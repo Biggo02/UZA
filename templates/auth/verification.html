@@ -1,1 +1,50 @@
-{% extends 'base.html' %}{% block content %}<main class='auth'><div class='card auth-card wide-card'><span class='eyebrow'>Certification UZA</span><h1>Vérifier mon identité</h1><p>Envoyez directement les photos du document et un selfie. Aucun champ URL.</p><form method='post' enctype='multipart/form-data'>{% csrf_token %}{{ form.as_p }}<div class='upload-note'>Les documents sont destinés exclusivement au personnel autorisé de UZA.</div><button class='btn primary full'>Envoyer mon dossier</button></form></div></main>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Vérification d'identité — UZA{% endblock %}
+{% block content %}
+<main class="verification-page">
+  <div class="verification-shell">
+    <section class="verification-intro">
+      <a class="verification-back" href="{% url 'dashboard' %}">← Retour à mon espace</a>
+      <div class="verification-brand">U<span>ZA</span></div>
+      <span class="verification-kicker">Compte certifié</span>
+      <h1>Vérifiez votre identité en toute sécurité.</h1>
+      <p class="verification-lead">Cette étape permet à UZA de confirmer votre identité avant de vous autoriser à publier, acheter et participer à une transaction.</p>
+      <div class="verification-steps">
+        <div class="verification-step active"><span>1</span><div><strong>Préparer vos photos</strong><small>Un document lisible et un selfie net.</small></div></div>
+        <div class="verification-step"><span>2</span><div><strong>Envoyer le dossier</strong><small>Les fichiers sont transmis de façon sécurisée.</small></div></div>
+        <div class="verification-step"><span>3</span><div><strong>Recevoir la décision UZA</strong><small>Votre statut passe à certifié après contrôle.</small></div></div>
+      </div>
+      <div class="verification-trust"><b>🔒 Vos documents restent privés</b><span>Ils sont réservés au personnel UZA autorisé et ne sont pas affichés publiquement.</span></div>
+    </section>
+
+    <section class="verification-card">
+      <div class="verification-card-head">
+        <div><span class="verification-mini">ÉTAPE 01 / 01</span><h2>Vérification d'identité</h2><p>Ajoutez les trois photos demandées ci-dessous.</p></div>
+        <div class="verification-status"><span></span> Dossier sécurisé</div>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" class="verification-form" id="verification-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="verification-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="verification-upload-grid" id="verification-fields">
+          {{ form.as_p }}
+        </div>
+        <div class="verification-policy">
+          <span class="verification-policy-icon">✓</span>
+          <div><strong>Utilisation limitée</strong><p>UZA utilise ces images uniquement pour vérifier votre identité et sécuriser la marketplace.</p></div>
+        </div>
+        <button type="submit" class="verification-submit"><span>Envoyer mon dossier</span><b>→</b></button>
+      </form>
+      <p class="verification-help">Besoin d'aide ? <a href="#">Contacter le support UZA</a></p>
+    </section>
+  </div>
+</main>
+
+<style>
+.verification-page{min-height:calc(100vh - 76px);padding:54px 20px 78px;background:radial-gradient(circle at 8% 12%,#e9e6ff 0,transparent 28%),radial-gradient(circle at 94% 82%,#dfe8ff 0,transparent 24%),#f6f7fb}
+.verification-shell{width:min(1120px,100%);margin:auto;display:grid;grid-template-columns:.82fr 1.18fr;gap:34px;align-items:stretch}
+.verification-intro{position:relative;padding:20px 22px 28px 8px}.verification-back{display:inline-flex;align-items:center;color:#687187;font-size:13px;font-weight:750;margin-bottom:55px}.verification-back:hover{color:#5b4bd8}.verification-brand{font-size:30px;letter-spacing:-.07em;font-weight:950;color:#11182f}.verification-brand span{color:#5b4bd8}.verification-kicker{display:inline-flex;margin-top:48px;padding:7px 10px;border-radius:99px;background:#ebe9ff;color:#5041c8;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.verification-intro h1{max-width:470px;margin:15px 0 16px;font-size:clamp(35px,4vw,53px);line-height:1.02;letter-spacing:-.06em;color:#11182f}.verification-lead{max-width:510px;color:#697187;line-height:1.75;font-size:15px}.verification-steps{display:grid;gap:12px;margin-top:34px}.verification-step{display:flex;gap:13px;align-items:flex-start;padding:13px 14px;border-radius:15px;transition:.2s}.verification-step.active{background:rgba(255,255,255,.75);box-shadow:0 12px 30px rgba(20,27,55,.05)}.verification-step>span{width:31px;height:31px;flex:none;display:grid;place-items:center;border-radius:50%;background:#eeecff;color:#5b4bd8;font-size:12px;font-weight:950}.verification-step strong{display:block;font-size:13px;color:#20263b}.verification-step small{display:block;color:#7a8295;font-size:11px;margin-top:3px}.verification-trust{display:grid;gap:4px;margin-top:28px;padding:16px;border-left:3px solid #5b4bd8;background:rgba(255,255,255,.65);border-radius:0 13px 13px 0}.verification-trust b{font-size:12px;color:#22283c}.verification-trust span{font-size:11px;color:#747c90;line-height:1.5}.verification-card{background:#fff;border:1px solid #e4e7f0;border-radius:27px;box-shadow:0 24px 70px rgba(22,29,55,.11);padding:34px;align-self:center}.verification-card-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding-bottom:25px;border-bottom:1px solid #edf0f5}.verification-mini{font-size:9px;letter-spacing:.12em;font-weight:950;color:#5b4bd8}.verification-card h2{font-size:26px;letter-spacing:-.04em;margin:7px 0 5px;color:#171b2f}.verification-card-head p{margin:0;color:#747c90;font-size:12px}.verification-status{white-space:nowrap;padding:8px 10px;border-radius:99px;background:#edf8f3;color:#14764f;font-size:10px;font-weight:850}.verification-status span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#16845b;margin-right:5px}.verification-form{padding-top:25px}.verification-upload-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.verification-upload-grid p{position:relative;margin:0;padding:18px;border:1px solid #e3e6ef;border-radius:17px;background:#fbfcfe;transition:.2s}.verification-upload-grid p:focus-within{border-color:#aaa2ff;box-shadow:0 0 0 4px rgba(91,75,216,.08);background:#fff}.verification-upload-grid p:last-child{grid-column:1/-1}.verification-upload-grid label{display:block;margin-bottom:11px;font-size:12px;font-weight:850;color:#242a3e}.verification-upload-grid input[type=file]{width:100%;padding:11px 10px;border:1px dashed #cdd2df;border-radius:11px;background:#fff;color:#626b80;font-size:11px}.verification-upload-grid input[type=file]::file-selector-button{border:0;background:#eeecff;color:#5041c8;padding:8px 10px;border-radius:8px;font-weight:800;font-size:11px;margin-right:8px;cursor:pointer}.verification-upload-grid .helptext{display:block;margin-top:7px;color:#858da0;font-size:10px}.verification-upload-grid ul.errorlist{margin:5px 0 0;padding:0;list-style:none;color:#c43d4b;font-size:10px}.verification-errors{padding:12px 14px;margin-bottom:14px;border-radius:12px;background:#fff0f1;color:#a62f3c;font-size:12px}.verification-policy{display:flex;gap:11px;margin-top:17px;padding:14px;border-radius:14px;background:#f3f2ff}.verification-policy-icon{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#5b4bd8;color:#fff;font-weight:900;font-size:12px;flex:none}.verification-policy strong{font-size:11px;color:#332b82}.verification-policy p{margin:2px 0 0;color:#666e82;font-size:10px;line-height:1.5}.verification-submit{width:100%;margin-top:15px;min-height:52px;border:0;border-radius:14px;background:linear-gradient(135deg,#5b4bd8,#4937bd);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 17px 0 19px;font-weight:900;font-size:13px;box-shadow:0 13px 27px rgba(91,75,216,.22);transition:.2s}.verification-submit:hover{transform:translateY(-2px);box-shadow:0 18px 35px rgba(91,75,216,.28)}.verification-submit b{font-size:19px}.verification-help{text-align:center;margin:16px 0 0;color:#8a91a2;font-size:10px}.verification-help a{color:#5b4bd8;font-weight:800}.verification-upload-grid p:nth-child(1)::before,.verification-upload-grid p:nth-child(2)::before,.verification-upload-grid p:nth-child(3)::before{display:block;font-size:23px;margin-bottom:8px}.verification-upload-grid p:nth-child(1)::before{content:'▣'}.verification-upload-grid p:nth-child(2)::before{content:'▣'}.verification-upload-grid p:nth-child(3)::before{content:'◉'}
+@media(max-width:850px){.verification-page{padding:28px 12px 45px}.verification-shell{grid-template-columns:1fr;gap:18px}.verification-intro{padding:8px 8px 0}.verification-back{margin-bottom:26px}.verification-kicker{margin-top:28px}.verification-intro h1{font-size:38px}.verification-steps,.verification-trust{display:none}.verification-card{padding:23px;border-radius:22px}.verification-card-head{display:block}.verification-status{display:inline-block;margin-top:13px}.verification-upload-grid{grid-template-columns:1fr}.verification-upload-grid p:last-child{grid-column:auto}}
+@media(max-width:480px){.verification-page{min-height:calc(100vh - 68px)}.verification-intro h1{font-size:32px}.verification-lead{font-size:13px}.verification-card{padding:18px}.verification-card h2{font-size:22px}.verification-upload-grid p{padding:15px}.verification-submit{min-height:50px}}
+</style>
+{% endblock %}
