@@ -29,7 +29,12 @@ def analyze_listing_images(request):
     files = request.FILES.getlist('images')
     if len(files) != 5:
         return JsonResponse({'status': 'ERROR', 'message': 'UZA exige exactement 5 photos.'}, status=400)
-    result = analyze_images(files)
+    try:
+        result = analyze_images(files)
+    except Exception as exc:
+        result = {'status': 'LOCAL_UNAVAILABLE', 'confidence': 0, 'photo_count': 5,
+                  'message': 'Analyse visuelle temporairement indisponible. Vous pouvez continuer avec une identification manuelle.',
+                  'technical_detail': str(exc)}
     return JsonResponse(result)
 
 
